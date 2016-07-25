@@ -1,0 +1,19 @@
+{
+  "name": "query-element",
+  "version": "1.0.2",
+  "description": "According to the element to generate css selector",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemonce/query-selector.git"
+  },
+  "author": "Chaos Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lemonce/query-selector/issues"
+  },
+  "homepage": "https://github.com/lemonce/query-selector#readme"
+}
