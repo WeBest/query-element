@@ -1,6 +1,6 @@
 {
   "name": "query-element",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Find a unique CSS selector for a given element",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,9 @@
   },
   "author": "Chaos Lee",
   "license": "MIT",
+	"maintainers": [
+		"Weilin Shi <934587911@qq.com>"
+	],
   "bugs": {
     "url": "https://github.com/lemonce/query-selector/issues"
   },

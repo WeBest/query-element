@@ -3,14 +3,47 @@ const assert = require('assert');
 const resolve = require('path').resolve;
 const jsdom = require('jsdom');
 
-describe('basic test', function () {
-	it('initialize it self properly', function (done) {
-		jsdom.env('<html><body><p>111</p></body></html>', [], done);
-	});
-	// 选到html或body上就挂了那简直太傻逼了
-	it('does not explode when html or body tag is selected', function (done) {
+const is = assert.deepEqual;
+
+const html = `
+<html>
+<body>
+  <div id="find-css-selector">
+    <div id="one"></div> <!-- Basic ID -->
+    <div id="2"></div> <!-- Escaped ID -->
+    <div class="three"></div> <!-- Basic Class -->
+    <div class="4"></div> <!-- Escaped Class -->
+    <div attr="5"></div>  <!-- Only an attribute -->
+    <p></p> <!-- Nothing unique -->
+    <div class="seven seven"></div> <!-- Two classes with same name -->
+    <div class="eight eight2"></div> <!-- Two classes with different names -->
+
+    <!-- Two elements with the same id - should not use ID -->
+    <div class="nine" id="nine-and-ten"></div>
+    <div class="ten" id="nine-and-ten"></div>
+
+    <!-- Three elements with the same id - should use class and nth-child instead -->
+    <div class="sameclass" id="11-12-13"></div>
+    <div class="sameclass" id="11-12-13"></div>
+    <div class="sameclass" id="11-12-13"></div>
+
+    <!-- Special characters -->
+    <div id="!, &quot;, #, $, %, &amp;, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, \`, {, |, }, ~"></div>
+  </div>
+  <style type="text/css">
+    #computed-style { width: 50px; height: 10px; }
+    #computed-style::before { content: "before"; }
+    #computed-style::after { content: "after"; }
+  </style>
+  <div id="computed-style"></div>
+</body>
+</html>
+`;
+
+describe('test for bug', function () {
+	it('handle all situations nicely', function (done) {
 		jsdom.env({
-			html: '<html><body id="app"><p>111</p></body></html>',
+			html: html,
 			scripts: [
 				resolve('.', 'index.js')
 			],
@@ -19,45 +52,33 @@ describe('basic test', function () {
 				ProcessExternalResources: ['script']
 			},
 			done: function (err, window) {
-				assert(!err, 'error during jsdom initialization');
-				assert(window.Sizzle, 'error during jsdom initialization');
+				assert(!err && window.u, 'error during jsdom initialization');
+
+				const u = window.u;
+				const escape = u.escape;
 
 				const $ = function(selector) {
 					return window.document.querySelector(selector);
 				};
 
-				const u = new window.Sizzle();
+				const nodes = $('*');
+				for (let i = 0; i < nodes.length; i++) {
+					const selector = u(nodes[i]);
+					const matches = $(selector);
 
-				assert.equal(u.gen($('html')), 'html', 'simple query');
-				assert.equal(u.gen($('body')), 'body', 'simple query');
+					is(matches.length, 1, 'There should be a single match');
+				}
 
-				done();
-			}
-		});
-	});
-	// 重复id要忽略
-	it('handle duplicated id nicely', function (done) {
-		jsdom.env({
-			html: '<html><body><p id="aa">111</p><p id="aa">222</p></body></html>',
-			scripts: [
-				resolve('.', 'index.js')
-			],
-			features: {
-				FetchExternalResources: ['script'],
-				ProcessExternalResources: ['script']
-			},
-			done: function (err, window) {
-				assert(!err, 'error during jsdom initialization');
+				let unattached = window.document.createElement('div');
+				unattached.id = 'unattached';
+				assert.throws(u.bind(null, unattached));
 
-				const $ = function(selector) {
-					return window.document.querySelector(selector);
-				};
+				let unattachedChild = window.document.createElement('div');
+				unattached.appendChild(unattachedChild);
+				assert.throws(u.bind(null, unattachedChild));
 
-				const u = new window.Sizzle();
-
-				assert.equal(u.config.invalidId.length, 0);
-				assert.equal(u.gen($('#aa')), 'body > p:nth-child(1)');
-				assert.equal(u.config.invalidId.length, 0);
+				let unattachedBody = window.document.createElement('body');
+				assert.throws(u.bind(null, unattachedBody));
 
 				done();
 			}
