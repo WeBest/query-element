@@ -55,7 +55,6 @@ describe('test for bug', function () {
 				assert(!err && window.u, 'error during jsdom initialization');
 
 				const u = window.u;
-				const escape = u.escape;
 
 				const $ = function(selector) {
 					return window.document.querySelector(selector);
