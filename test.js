@@ -55,6 +55,7 @@ describe('test for bug', function () {
 				assert(!err && window.u, 'error during jsdom initialization');
 
 				const u = window.u;
+				const escape = u.escape;
 
 				const $ = function(selector) {
 					return window.document.querySelector(selector);
@@ -78,6 +79,31 @@ describe('test for bug', function () {
 
 				let unattachedBody = window.document.createElement('body');
 				assert.throws(u.bind(null, unattachedBody));
+
+				let data = [
+					'#one',
+					'#' + escape('2'),
+					'.three',
+					'.' + escape('4'),
+					'#find-css-selector > div:nth-child(5)',
+					'#find-css-selector > p:nth-child(6)',
+					'.seven',
+					'.eight',
+					'.nine',
+					'.ten',
+					'div.sameclass:nth-child(11)',
+					'div.sameclass:nth-child(12)',
+					'div.sameclass:nth-child(13)',
+					'#' + escape('!, \", #, $, %, &, \', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \\, ], ^, `, {, |, }, ~')
+				];
+
+				let container = $('#find-css-selector');
+				is(container.children.length, data.length, 'correct # of child');
+
+				for (let i = 0; i < data.length; i++) {
+					let node = container.children[i];
+					is(u(node), data[i], 'matched id for index ' + (i - 1));
+				}
 
 				done();
 			}
