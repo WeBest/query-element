@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-	  "lint": "eslint *.js"
+    "lint": "eslint *.js"
   },
   "repository": {
     "type": "git",
@@ -13,16 +13,16 @@
   },
   "author": "Chaos Lee",
   "license": "MIT",
-	"maintainers": [
-		"Weilin Shi <934587911@qq.com>"
-	],
+  "maintainers": [
+    "Weilin Shi <934587911@qq.com>"
+  ],
   "bugs": {
     "url": "https://github.com/lemonce/query-selector/issues"
   },
   "homepage": "https://github.com/lemonce/query-selector#readme",
   "devDependencies": {
-    "eslint": "^3.8.1",
-    "jsdom": "^9.8.0",
+    "eslint": "^3.9.1",
+    "jsdom": "^9.8.3",
     "mocha": "^3.1.2"
   }
 }

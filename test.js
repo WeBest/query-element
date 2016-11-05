@@ -83,18 +83,18 @@ describe('test for bug', function () {
 				let data = [
 					'#one',
 					'#' + escape('2'),
-					'.three',
-					'.' + escape('4'),
+					'div.three',
+					'div.' + escape('4'),
 					'#find-css-selector > div:nth-child(5)',
 					'#find-css-selector > p:nth-child(6)',
-					'.seven',
-					'.eight',
-					'.nine',
-					'.ten',
+					'div.seven',
+					'div.eight',
+					'div.nine',
+					'div.ten',
 					'div.sameclass:nth-child(11)',
 					'div.sameclass:nth-child(12)',
 					'div.sameclass:nth-child(13)',
-					'#' + escape('!, \", #, $, %, &, \', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \\, ], ^, `, {, |, }, ~')
+					'#' + escape('!, \", #, $, %, &, \', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, `, {, |, }, ~')
 				];
 
 				let container = $('#find-css-selector');
